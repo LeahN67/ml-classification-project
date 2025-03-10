@@ -1,8 +1,10 @@
 # ML Classification Dashboard
 
-This repository contains a machine learning classification project that includes data exploration, processing, model building, and a dashboard interface for predictions.
+This repository contains a machine learning classification project that includes **data exploration**, **data processing**, **model building**, and an **interactive dashboard** for predictions. The project focuses on classifying financial transactions using a combination of rule-based and machine learning approaches.
 
 ![Dashboard Preview](assets/dashboard_preview.png)
+
+---
 
 ## Project Structure
 
@@ -35,44 +37,49 @@ ml-classification-project/
 └── README.md              # Project documentation
 ```
 
+---
+
 ## Getting Started
 
 ### Prerequisites
 
-- Python 3.8+
-- Git
+- **Python 3.8+**
+- **Git**
+- **Streamlit** (for running the dashboard)
 
 ### Setup Instructions
 
 1. **Clone the repository**
 
-```bash
-git clone https://github.com/yourusername/ml-classification-project.git
-cd ml-classification-project
-```
+   ```bash
+   git clone https://github.com/yourusername/ml-classification-project.git
+   cd ml-classification-project
+   ```
 
 2. **Create a Python virtual environment**
 
-```bash
-# Using venv
-python -m venv <environment_name>
+   ```bash
+   # Using venv
+   python -m venv <environment_name>
 
-# Activate the environment:
-# On Windows
-<environment_name>\Scripts\activate
-# On macOS/Linux
-source <environment_name>/bin/activate
-```
+   # Activate the environment:
+   # On Windows
+   <environment_name>\Scripts\activate
+   # On macOS/Linux
+   source <environment_name>/bin/activate
+   ```
 
 3. **Install dependencies**
 
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+---
 
 ## Project Workflow
 
-### 1. Exploratory Data Analysis
+### 1. **Exploratory Data Analysis (EDA)**
 
 Run the EDA script to analyze the transactional dataset:
 
@@ -81,13 +88,15 @@ python eda/transaction_analysis_dashboard.py
 ```
 
 This script analyzes the dataset to understand:
-- Data distribution
-- Feature correlations
-- Missing values
-- Class distribution
-- Statistical summaries
+- **Data distribution**
+- **Feature correlations**
+- **Missing values**
+- **Class distribution**
+- **Statistical summaries**
 
-### 2. Data Processing
+---
+
+### 2. **Data Processing**
 
 Process the raw transactional data:
 
@@ -96,16 +105,18 @@ python data_processing/data_processing.py
 ```
 
 This step performs:
-- Feature engineering
-- Handling missing values
-- Encoding categorical variables
-- Removing outliers
-- Normalization/standardization
+- **Feature engineering**
+- **Handling missing values**
+- **Encoding categorical variables**
+- **Removing outliers**
+- **Normalization/standardization**
 - Saving the processed dataset as `modified_dataset.parquet`
 
-### 3. Classification Approaches
+---
 
-#### Option 1: Rule-Based Classification (Optional)
+### 3. **Classification Approaches**
+
+#### **Option 1: Rule-Based Classification (Optional)**
 
 You can first run a rule-based classification algorithm before training a machine learning model:
 
@@ -119,7 +130,7 @@ This approach:
 - Can serve as a baseline or interpretable model
 - Provides insights that can inform feature engineering
 
-#### Option 2: XGBoost Model
+#### **Option 2: XGBoost Model**
 
 Train the XGBoost classification model:
 
@@ -134,7 +145,9 @@ This script:
 - Evaluates the model performance
 - Saves the model and encoders for future use
 
-### 4. Running the Dashboard
+---
+
+### 4. **Running the Dashboard**
 
 Launch the Streamlit dashboard to visualize model performance and make predictions:
 
@@ -143,59 +156,82 @@ streamlit run app.py
 ```
 
 The dashboard provides:
-- Model performance metrics
-- Feature importance analysis
-- Interactive prediction tool
-- Dataset exploration capabilities
+- **Model performance metrics**
+- **Feature importance analysis**
+- **Interactive prediction tool**
+- **Dataset exploration capabilities**
 
-## Dashboard Features:
+---
 
-### Model Performance
+## Dashboard Features
 
+### **Model Performance**
 - Classification report with precision, recall, and F1 score
 - Interactive confusion matrix
 - Model parameters summary
 
-### Feature Analysis
-
+### **Feature Analysis**
 - Feature importance visualization
 - Feature correlation heatmap
 - Detailed feature insights
 
-### Prediction Tool
-
+### **Prediction Tool**
 - Interactive interface for inputting feature values
 - Real-time prediction with class probabilities
 - Visual representation of prediction results
 
-### Dataset Exploration
-
+### **Dataset Exploration**
 - Dataset overview and statistics
 - Class distribution visualization
 - Feature distribution analysis
+
+---
 
 ## Customization
 
 You can customize the model directory and data path in the dashboard's sidebar:
 
-1. Click on the sidebar icon (if collapsed)
-2. Enter your custom model directory path
-3. Enter your custom data path
-4. Click "Load Model and Data" to apply changes
+1. Click on the sidebar icon (if collapsed).
+2. Enter your custom model directory path.
+3. Enter your custom data path.
+4. Click **"Load Model and Data"** to apply changes.
+
+---
 
 ## Dependencies
 
 Key libraries used in this project:
 
-- streamlit - For building the interactive dashboard
-- pandas - For data manipulation
-- numpy - For numerical operations
-- scikit-learn - For model evaluation and preprocessing
-- xgboost - For the classification model
-- matplotlib & seaborn - For static visualizations
-- plotly - For interactive visualizations
+| Library         | Purpose                                   |
+|-----------------|-------------------------------------------|
+| **streamlit**   | For building the interactive dashboard    |
+| **pandas**      | For data manipulation                    |
+| **numpy**       | For numerical operations                 |
+| **scikit-learn**| For model evaluation and preprocessing   |
+| **xgboost**     | For the classification model             |
+| **matplotlib**  | For static visualizations                |
+| **seaborn**     | For enhanced visualizations              |
+| **plotly**      | For interactive visualizations           |
+
+---
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please follow these steps:
 
+1. Fork the repository.
+2. Create a new branch for your feature or bugfix.
+3. Commit your changes with clear and descriptive messages.
+4. Submit a Pull Request (PR) with a detailed description of your changes.
+
+---
+
+## Acknowledgments
+
+- **Streamlit** for providing an excellent framework for building interactive dashboards.
+- **XGBoost** for its powerful and efficient implementation of gradient boosting.
+- **Scikit-learn** for its comprehensive suite of machine learning tools.
+
+---
+
+This README provides a comprehensive guide to the project, including setup instructions, workflow details, and customization options. Let me know if you need further assistance!
