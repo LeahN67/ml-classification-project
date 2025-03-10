@@ -147,7 +147,7 @@ This script:
 
 ---
 
-### 4. **Running the Dashboard**
+### 4. **Running the Dashboard Locally**
 
 Launch the Streamlit dashboard to visualize model performance and make predictions:
 
@@ -196,7 +196,7 @@ You can customize the model directory and data path in the dashboard's sidebar:
 3. Enter your custom data path.
 4. Click **"Load Model and Data"** to apply changes.
 
-### To Access Deployed Dashboard: https://ml-classification.streamlit.app/
+**To Access Deployed Dashboard: https://ml-classification.streamlit.app/**
 
 ---
 
