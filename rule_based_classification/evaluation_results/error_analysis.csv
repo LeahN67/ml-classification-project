@@ -1,0 +1,11 @@
+Error_Type,Count,Percentage
+Completed → Pending,1509,80.52
+Cancelled → Pending,102,5.44
+Refunded → Pending,56,2.99
+Cancelled → Completed,56,2.99
+Refunded → Completed,39,2.08
+Chargeback → Pending,37,1.97
+Completed → Chargeback,36,1.92
+Chargeback → Completed,28,1.49
+Pending → Chargeback,8,0.43
+Cancelled → Chargeback,3,0.16
