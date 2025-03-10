@@ -220,8 +220,8 @@ def main():
         st.image("https://xgboost.ai/images/logo/xgboost-logo.png", width=200)
         st.markdown("## Model Settings")
         
-        model_dir = st.text_input("Model Directory", r"C:\Users\HP\Documents\credrails\modelling\model_outputs")
-        data_path = st.text_input("Data Path", r"C:\Users\HP\Documents\credrails\data_processing\modified_dataset.parquet")
+        model_dir = st.text_input("Model Directory", "modelling/model_outputs")
+        data_path = st.text_input("Data Path", "data_processing/modified_dataset.parquet")
         
         if st.button("Load Model and Data", key="load_button"):
             st.session_state['load_triggered'] = True
