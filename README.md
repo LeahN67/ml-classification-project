@@ -196,6 +196,8 @@ You can customize the model directory and data path in the dashboard's sidebar:
 3. Enter your custom data path.
 4. Click **"Load Model and Data"** to apply changes.
 
+**To Access Dashboard:**https://ml-classification.streamlit.app/
+
 ---
 
 ## Dependencies
