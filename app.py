@@ -323,7 +323,7 @@ def main():
                 # Try to load confusion matrix from file
                 img_path = os.path.join(model_dir, 'confusion_matrix.png')
                 if os.path.exists(img_path):
-                    st.image(img_path, use_column_width=True)
+                    st.image(img_path, use_container_width=True)
                 else:
                     raise FileNotFoundError("Confusion matrix image not found")
             except FileNotFoundError:
@@ -367,7 +367,7 @@ def main():
             # Try to load feature importance from file
             img_path = os.path.join(model_dir, 'feature_importance.png')
             if os.path.exists(img_path):
-                st.image(img_path, use_column_width=True)
+                st.image(img_path, use_container_width=True)
             else:
                 raise FileNotFoundError("Feature importance image not found")
         except FileNotFoundError:
