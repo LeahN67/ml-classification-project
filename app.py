@@ -289,49 +289,12 @@ def main():
         
         with col1:
             st.markdown('<div class="card">', unsafe_allow_html=True)
-            st.markdown('<div class="section">Classification Report</div>', unsafe_allow_html=True)
-            
             try:
                 with open(os.path.join(model_dir, 'evaluation_metrics.txt'), 'r') as f:
                     metrics_text = f.read()
                 
-                # Parse the classification report
-                report_dict = classification_report(y_test, y_pred, output_dict=True)
-                
-                # Display metrics for each class in a more appealing way
-                for class_name, metrics in report_dict.items():
-                    if class_name in class_names:
-                        st.markdown(f"<h3>Class: {class_name}</h3>", unsafe_allow_html=True)
-                        
-                        col1_1, col2_1, col3_1 = st.columns(3)
-                        
-                        with col1_1:
-                            st.markdown(f"""
-                            <div class="metric-card" style="background-color: #e3f2fd;">
-                                <h4 style="color: #1E88E5;">Precision</h4>
-                                <h2 style="color: #0D47A1;">{metrics['precision']:.2f}</h2>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        with col2_1:
-                            st.markdown(f"""
-                            <div class="metric-card" style="background-color: #e8f5e9;">
-                                <h4 style="color: #43A047;">Recall</h4>
-                                <h2 style="color: #1B5E20;">{metrics['recall']:.2f}</h2>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        with col3_1:
-                            st.markdown(f"""
-                            <div class="metric-card" style="background-color: #fff3e0;">
-                                <h4 style="color: #EF6C00;">F1-Score</h4>
-                                <h2 style="color: #E65100;">{metrics['f1-score']:.2f}</h2>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        # Add a progress bar for F1-score
-                        st.progress(metrics['f1-score'])
-                        
+                st.markdown('<div class="section">Classification Report</div>', unsafe_allow_html=True)
+                st.text(metrics_text)
             except FileNotFoundError:
                 st.warning("Evaluation metrics file not found. Let's generate new metrics.")
                 
@@ -348,41 +311,8 @@ def main():
                 y_pred = model.predict(X_test_scaled)
                 
                 # Create and display classification report
-                report = classification_report(y_test, y_pred, output_dict=True)
-                
-                for class_name, metrics in report.items():
-                    if class_name in class_names:
-                        st.markdown(f"<h3>Class: {class_name}</h3>", unsafe_allow_html=True)
-                        
-                        col1_1, col2_1, col3_1 = st.columns(3)
-                        
-                        with col1_1:
-                            st.markdown(f"""
-                            <div class="metric-card" style="background-color: #e3f2fd;">
-                                <h4 style="color: #1E88E5;">Precision</h4>
-                                <h2 style="color: #0D47A1;">{metrics['precision']:.2f}</h2>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        with col2_1:
-                            st.markdown(f"""
-                            <div class="metric-card" style="background-color: #e8f5e9;">
-                                <h4 style="color: #43A047;">Recall</h4>
-                                <h2 style="color: #1B5E20;">{metrics['recall']:.2f}</h2>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        with col3_1:
-                            st.markdown(f"""
-                            <div class="metric-card" style="background-color: #fff3e0;">
-                                <h4 style="color: #EF6C00;">F1-Score</h4>
-                                <h2 style="color: #E65100;">{metrics['f1-score']:.2f}</h2>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        # Add a progress bar for F1-score
-                        st.progress(metrics['f1-score'])
-            
+                report = classification_report(y_test, y_pred)
+                st.text(report)
             st.markdown('</div>', unsafe_allow_html=True)
         
         with col2:
@@ -411,24 +341,8 @@ def main():
                 # Generate predictions
                 y_pred = model.predict(X_test_scaled)
                 
-                # Plot confusion matrix with Plotly
-                cm_fig = px.imshow(
-                    confusion_matrix(y_test, y_pred),
-                    labels=dict(x="Predicted", y="True", color="Count"),
-                    x=class_names,
-                    y=class_names,
-                    text_auto=True,
-                    color_continuous_scale='Blues'
-                )
-                
-                cm_fig.update_layout(
-                    title="Confusion Matrix",
-                    xaxis_title="Predicted Label",
-                    yaxis_title="True Label",
-                    height=600,
-                    width=800
-                )
-                
+                # Plot confusion matrix
+                cm_fig = plot_confusion_matrix(y_test, y_pred, class_names)
                 st.plotly_chart(cm_fig, use_container_width=True)
             
             st.markdown('</div>', unsafe_allow_html=True)
@@ -440,110 +354,7 @@ def main():
         model_params = model.get_params()
         st.json(model_params)
         st.markdown('</div>', unsafe_allow_html=True)
-    # Inside the main() function, under the Model Performance tab
-    with tabs[0]:
-        st.markdown('<div class="sub-header">Model Performance Metrics</div>', unsafe_allow_html=True)
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown('<div class="card">', unsafe_allow_html=True)
-            st.markdown('<div class="section">Classification Report</div>', unsafe_allow_html=True)
-            
-            try:
-                with open(os.path.join(model_dir, 'evaluation_metrics.txt'), 'r') as f:
-                    metrics_text = f.read()
-                
-                # Parse the classification report
-                report_dict = classification_report(y_test, y_pred, output_dict=True)
-                
-                # Display metrics for each class in a more appealing way
-                for class_name, metrics in report_dict.items():
-                    if class_name in class_names:
-                        st.markdown(f"<h3>Class: {class_name}</h3>", unsafe_allow_html=True)
-                        
-                        col1_1, col2_1, col3_1 = st.columns(3)
-                        
-                        with col1_1:
-                            st.markdown(f"""
-                            <div class="metric-card" style="background-color: #e3f2fd;">
-                                <h4 style="color: #1E88E5;">Precision</h4>
-                                <h2 style="color: #0D47A1;">{metrics['precision']:.2f}</h2>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        with col2_1:
-                            st.markdown(f"""
-                            <div class="metric-card" style="background-color: #e8f5e9;">
-                                <h4 style="color: #43A047;">Recall</h4>
-                                <h2 style="color: #1B5E20;">{metrics['recall']:.2f}</h2>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        with col3_1:
-                            st.markdown(f"""
-                            <div class="metric-card" style="background-color: #fff3e0;">
-                                <h4 style="color: #EF6C00;">F1-Score</h4>
-                                <h2 style="color: #E65100;">{metrics['f1-score']:.2f}</h2>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        # Add a progress bar for F1-score
-                        st.progress(metrics['f1-score'])
-                            
-            except FileNotFoundError:
-                st.warning("Evaluation metrics file not found. Let's generate new metrics.")
-                
-                # Split data for evaluation
-                from sklearn.model_selection import train_test_split
-                X = features  # Use preprocessed features
-                y = df['Classification_Tag']
-                X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-                
-                # Scale features
-                X_test_scaled = scaler.transform(X_test)
-                
-                # Generate predictions
-                y_pred = model.predict(X_test_scaled)
-                
-                # Create and display classification report
-                report = classification_report(y_test, y_pred, output_dict=True)
-                
-                for class_name, metrics in report.items():
-                    if class_name in class_names:
-                        st.markdown(f"<h3>Class: {class_name}</h3>", unsafe_allow_html=True)
-                        
-                        col1_1, col2_1, col3_1 = st.columns(3)
-                        
-                        with col1_1:
-                            st.markdown(f"""
-                            <div class="metric-card" style="background-color: #e3f2fd;">
-                                <h4 style="color: #1E88E5;">Precision</h4>
-                                <h2 style="color: #0D47A1;">{metrics['precision']:.2f}</h2>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        with col2_1:
-                            st.markdown(f"""
-                            <div class="metric-card" style="background-color: #e8f5e9;">
-                                <h4 style="color: #43A047;">Recall</h4>
-                                <h2 style="color: #1B5E20;">{metrics['recall']:.2f}</h2>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        with col3_1:
-                            st.markdown(f"""
-                            <div class="metric-card" style="background-color: #fff3e0;">
-                                <h4 style="color: #EF6C00;">F1-Score</h4>
-                                <h2 style="color: #E65100;">{metrics['f1-score']:.2f}</h2>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        # Add a progress bar for F1-score
-                        st.progress(metrics['f1-score'])
-                
-            st.markdown('</div>', unsafe_allow_html=True)
-            
+    
     # Tab 2: Feature Analysis
     with tabs[1]:
         st.markdown('<div class="sub-header">Feature Importance Analysis</div>', unsafe_allow_html=True)
