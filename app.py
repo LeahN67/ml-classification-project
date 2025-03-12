@@ -485,6 +485,7 @@ def create_gauge_chart(value, title, threshold_ranges=None):
                 "value": value
             }
         },
+        
         number={"font": {"size": 30, "color": color}, "suffix": "", "valueformat": ".2f"}
     ))
     
