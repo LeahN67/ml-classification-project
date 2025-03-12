@@ -283,6 +283,10 @@ def main():
             background-color: #0D47A1;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+        /* Error message styling */
+        .stAlert {
+            border-radius: 8px;
+        }
     </style>
     """, unsafe_allow_html=True)
     
@@ -354,12 +358,26 @@ def main():
     # Initialize session state variables
     if 'load_triggered' not in st.session_state:
         st.session_state['load_triggered'] = False
+    if 'features' not in st.session_state:
+        st.session_state['features'] = None
+    if 'model' not in st.session_state:
+        st.session_state['model'] = None
+    if 'scaler' not in st.session_state:
+        st.session_state['scaler'] = None
+    if 'df' not in st.session_state:
+        st.session_state['df'] = None
+    if 'class_names' not in st.session_state:
+        st.session_state['class_names'] = None
     
     # Load model, encoders, and data
     if st.session_state['load_triggered']:
         with st.spinner('Preparing environment...'):
             model, status_encoder, dayofweek_encoder, classification_tag_encoder = load_model_and_encoders(model_dir)
             df = load_data(data_path)
+            
+            # Store in session state
+            st.session_state['model'] = model
+            st.session_state['df'] = df
         
             if model is None or df is None:
                 st.error("⚠️ Could not proceed without model or data. Please check the paths and try again.")
@@ -367,6 +385,8 @@ def main():
                 # Preprocess features for model
                 with st.spinner('Processing features...'):
                     features = preprocess_features(df, status_encoder, dayofweek_encoder)
+                    # Store features in session state
+                    st.session_state['features'] = features
                 
                     # Feature scaling
                     scaler = StandardScaler()
@@ -381,6 +401,8 @@ def main():
                     # Fit the scaler on the processed features
                     try:
                         scaler.fit(features)
+                        # Store scaler in session state
+                        st.session_state['scaler'] = scaler
                     except Exception as e:
                         st.error(f"⚠️ Error fitting scaler: {e}")
                         # Try to provide more detailed error information
@@ -398,6 +420,18 @@ def main():
                     
                     # Get class names
                     class_names = classification_tag_encoder.classes_
+                    # Store class names in session state
+                    st.session_state['class_names'] = class_names
+                    
+                    # Get features from session state to ensure it's available globally
+                    features = st.session_state['features']
+                    model = st.session_state['model']
+                    scaler = st.session_state['scaler']
+                    df = st.session_state['df']
+                    class_names = st.session_state['class_names']
+                    
+                    # Define feature_names here to ensure it's available
+                    feature_names = features.columns if features is not None else []
                     
                     # Tab 1: Model Performance with enhanced visuals
                     with tabs[0]:
@@ -585,6 +619,11 @@ def main():
         st.markdown('<div style="margin: 2rem 0;">', unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Set features to None if not loaded yet - ensures no errors when accessing features.columns
+        features = None
+        st.session_state['features'] = None
+    
     # Tab 2: Feature Analysis
     with tabs[1]:
         st.markdown('<div class="sub-header">Feature Importance Analysis</div>', unsafe_allow_html=True)
