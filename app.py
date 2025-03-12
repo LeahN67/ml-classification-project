@@ -21,7 +21,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Enhanced CSS to make the dashboard more colorful and professional
+# Custom CSS to make the dashboard more colorful and professional
 st.markdown("""
 <style>
     .main-header {
@@ -30,27 +30,18 @@ st.markdown("""
         text-align: center;
         margin-bottom: 1rem;
         font-weight: bold;
-        background: linear-gradient(90deg, #1E88E5, #5E35B1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        padding: 10px;
     }
     .sub-header {
         font-size: 1.8rem;
         color: #43A047;
         margin-top: 1rem;
         font-weight: bold;
-        border-left: 5px solid #43A047;
-        padding-left: 10px;
     }
     .section {
         font-size: 1.2rem;
         color: #5E35B1;
         margin-top: 0.8rem;
         font-weight: 500;
-        display: inline-block;
-        border-bottom: 2px solid #5E35B1;
-        padding-bottom: 3px;
     }
     .card {
         background-color: #f8f9fa;
@@ -58,34 +49,14 @@ st.markdown("""
         padding: 20px;
         margin-bottom: 20px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-    }
-    .metric-value {
-        font-size: 2.5rem;
-        font-weight: bold;
-        margin: 10px 0;
-        text-align: center;
-    }
-    .metric-label {
-        font-size: 1rem;
-        color: #555;
-        text-align: center;
     }
     .metric-card {
-        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        background-color: #e3f2fd;
         border-radius: 10px;
         padding: 15px;
         margin: 5px;
         text-align: center;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease;
-    }
-    .metric-card:hover {
-        transform: scale(1.03);
     }
     .stTabs [data-baseweb="tab-list"] {
         gap: 2px;
@@ -98,92 +69,10 @@ st.markdown("""
         gap: 1px;
         padding-top: 10px;
         padding-bottom: 10px;
-        transition: background-color 0.3s ease;
     }
     .stTabs [aria-selected="true"] {
         background-color: #3f51b5;
         color: white;
-    }
-    .highlight-metric {
-        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-        color: #2e7d32;
-        padding: 12px;
-        border-radius: 8px;
-        text-align: center;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        transition: transform 0.2s;
-    }
-    .highlight-metric:hover {
-        transform: scale(1.05);
-    }
-    .metric-row {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-    .metric-box {
-        flex: 1;
-        min-width: 150px;
-        background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-        border-radius: 8px;
-        padding: 15px;
-        text-align: center;
-        box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
-    }
-    .metric-box:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
-    .metric-box.high {
-        background: linear-gradient(135deg, #e3f2fd 0%, #90caf9 100%);
-    }
-    .metric-box.medium {
-        background: linear-gradient(135deg, #e8f5e9 0%, #a5d6a7 100%);
-    }
-    .metric-box.low {
-        background: linear-gradient(135deg, #fff3e0 0%, #ffcc80 100%);
-    }
-    .metric-value {
-        font-size: 2rem;
-        font-weight: bold;
-        margin: 10px 0;
-    }
-    .metric-title {
-        font-size: 1rem;
-        font-weight: 500;
-        color: #555;
-    }
-    .progress-container {
-        width: 100%;
-        background-color: #e0e0e0;
-        border-radius: 10px;
-        margin: 8px 0;
-    }
-    .progress-bar {
-        height: 10px;
-        border-radius: 10px;
-        background: linear-gradient(90deg, #64b5f6 0%, #1976d2 100%);
-        transition: width 1s ease-in-out;
-    }
-    .class-title {
-        display: flex;
-        align-items: center;
-        margin-bottom: 5px;
-    }
-    .class-indicator {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        margin-right: 8px;
-    }
-    .confusion-matrix-container {
-        padding: 10px;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -211,7 +100,7 @@ def load_data(file_path='data_processing/modified_dataset.parquet'):
         st.error(f"Could not load data from {file_path}")
         return None
 
-# Enhanced confusion matrix visualization
+# Helper function to create confusion matrix visualization
 def plot_confusion_matrix(y_true, y_pred, class_names):
     cm = confusion_matrix(y_true, y_pred)
     
@@ -225,48 +114,17 @@ def plot_confusion_matrix(y_true, y_pred, class_names):
         color_continuous_scale='Blues'
     )
     
-    # Enhance the layout with more engaging design
     fig.update_layout(
-        title={
-            'text': "Confusion Matrix",
-            'y':0.95,
-            'x':0.5,
-            'xanchor': 'center',
-            'yanchor': 'top',
-            'font': {'size': 24, 'color': '#3f51b5', 'family': 'Arial, sans-serif'}
-        },
-        xaxis_title={
-            'text': "Predicted Label",
-            'font': {'size': 16, 'color': '#555'}
-        },
-        yaxis_title={
-            'text': "True Label",
-            'font': {'size': 16, 'color': '#555'}
-        },
+        title="Confusion Matrix",
+        xaxis_title="Predicted Label",
+        yaxis_title="True Label",
         height=600,
-        width=800,
-        plot_bgcolor='rgba(240,240,240,0.8)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        margin=dict(l=40, r=40, t=80, b=40),
-        coloraxis_colorbar=dict(
-            title="Count",
-            tickfont=dict(size=14),
-            titlefont=dict(size=16)
-        )
+        width=800
     )
-    
-    # Add annotations for diagonal (correct predictions) to highlight them
-    for i in range(len(class_names)):
-        fig.add_annotation(
-            x=i, y=i,
-            text=f"<b>{cm[i, i]}</b>",
-            font=dict(color="white" if cm[i, i] > 30 else "black", size=16),
-            showarrow=False
-        )
     
     return fig
 
-# Enhanced feature importance plotting
+# Helper function to plot feature importance
 def plot_feature_importance(model, feature_names):
     # Get feature importance
     feature_importance = model.feature_importances_
@@ -274,7 +132,7 @@ def plot_feature_importance(model, feature_names):
     # Sort features by importance
     sorted_idx = np.argsort(feature_importance)
     
-    # Create a more engaging bar chart with Plotly
+    # Create a bar chart with Plotly
     fig = px.bar(
         x=feature_importance[sorted_idx],
         y=[feature_names[i] for i in sorted_idx],
@@ -284,43 +142,12 @@ def plot_feature_importance(model, feature_names):
         title="Feature Importance"
     )
     
-    # Enhance the layout
     fig.update_layout(
-        title={
-            'text': "Feature Importance Analysis",
-            'y':0.95,
-            'x':0.5,
-            'xanchor': 'center',
-            'yanchor': 'top',
-            'font': {'size': 24, 'color': '#43A047', 'family': 'Arial, sans-serif'}
-        },
-        xaxis_title={
-            'text': "Importance Score",
-            'font': {'size': 16, 'color': '#555'}
-        },
-        yaxis_title={
-            'text': "Features",
-            'font': {'size': 16, 'color': '#555'}
-        },
+        xaxis_title="Importance Score",
+        yaxis_title="Features",
         height=600,
-        yaxis={'categoryorder': 'total ascending'},
-        plot_bgcolor='rgba(240,240,240,0.8)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        margin=dict(l=40, r=40, t=80, b=40)
+        yaxis={'categoryorder': 'total ascending'}
     )
-    
-    # Add reference lines for better readability
-    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='rgba(0,0,0,0.1)')
-    
-    # Add value labels to the bars
-    for i, val in enumerate(feature_importance[sorted_idx]):
-        fig.add_annotation(
-            x=val + max(feature_importance) * 0.01,
-            y=i,
-            text=f"{val:.4f}",
-            showarrow=False,
-            font=dict(size=12)
-        )
     
     return fig
 
@@ -374,170 +201,6 @@ def preprocess_features(df, status_encoder, dayofweek_encoder):
     features.fillna(features.mean(), inplace=True)
     
     return features
-
-# Parse classification report text into a structured format
-def parse_classification_report(report_text):
-    lines = report_text.strip().split('\n')
-    metrics = []
-    
-    # Find the line with header (precision, recall, etc.)
-    for i, line in enumerate(lines):
-        if 'precision' in line.lower() and 'recall' in line.lower() and 'f1-score' in line.lower():
-            header_line = i
-            break
-    
-    # Extract class metrics
-    for i in range(header_line + 1, len(lines)):
-        line = lines[i].strip()
-        if not line or 'accuracy' in line or 'macro' in line or 'weighted' in line:
-            break
-            
-        parts = line.split()
-        if len(parts) >= 5:  # Class label, precision, recall, f1, support
-            try:
-                class_label = parts[0]
-                precision = float(parts[1])
-                recall = float(parts[2])
-                f1 = float(parts[3])
-                support = int(parts[4])
-                
-                metrics.append({
-                    'class': class_label,
-                    'precision': precision,
-                    'recall': recall,
-                    'f1': f1,
-                    'support': support
-                })
-            except (ValueError, IndexError):
-                continue
-    
-    # Extract overall metrics
-    accuracy = None
-    macro_avg = None
-    weighted_avg = None
-    
-    for line in lines:
-        if 'accuracy' in line:
-            try:
-                parts = line.split()
-                accuracy = float(parts[1])
-            except (ValueError, IndexError):
-                pass
-        elif 'macro avg' in line:
-            try:
-                parts = line.split()
-                macro_avg = {
-                    'precision': float(parts[2]),
-                    'recall': float(parts[3]),
-                    'f1': float(parts[4])
-                }
-            except (ValueError, IndexError):
-                pass
-        elif 'weighted avg' in line:
-            try:
-                parts = line.split()
-                weighted_avg = {
-                    'precision': float(parts[2]),
-                    'recall': float(parts[3]),
-                    'f1': float(parts[4])
-                }
-            except (ValueError, IndexError):
-                pass
-    
-    return {
-        'class_metrics': metrics,
-        'accuracy': accuracy,
-        'macro_avg': macro_avg,
-        'weighted_avg': weighted_avg
-    }
-
-# Helper function to create a gauge chart for metrics
-def create_gauge_chart(value, title, threshold_ranges=None):
-    if threshold_ranges is None:
-        threshold_ranges = [(0, 0.6, "red"), (0.6, 0.8, "orange"), (0.8, 1.0, "green")]
-    
-    # Determine color based on value
-    color = "gray"
-    for start, end, range_color in threshold_ranges:
-        if start <= value <= end:
-            color = range_color
-            break
-    
-    # Create gauge chart
-    fig = go.Figure(go.Indicator(
-        mode="gauge+number",
-        value=value,
-        title={"text": title, "font": {"size": 24, "color": "#333"}},
-        gauge={
-            "axis": {"range": [0, 1], "tickwidth": 1, "tickcolor": "darkblue"},
-            "bar": {"color": color},
-            "bgcolor": "white",
-            "borderwidth": 2,
-            "bordercolor": "gray",
-            "steps": [
-                {"range": [0, 0.6], "color": "rgba(255, 0, 0, 0.2)"},
-                {"range": [0.6, 0.8], "color": "rgba(255, 165, 0, 0.2)"},
-                {"range": [0.8, 1], "color": "rgba(0, 128, 0, 0.2)"}
-            ],
-            "threshold": {
-                "line": {"color": "black", "width": 4},
-                "thickness": 0.75,
-                "value": value
-            }
-        },
-        
-        number={"font": {"size": 30, "color": color}, "suffix": "", "valueformat": ".2f"}
-    ))
-    
-    fig.update_layout(
-        height=300,
-        margin=dict(l=20, r=20, t=50, b=20),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)"
-    )
-    
-    return fig
-
-# Create radar chart for comparing metrics across classes
-def create_metrics_radar_chart(metrics_data):
-    categories = ['Precision', 'Recall', 'F1-Score']
-    
-    fig = go.Figure()
-    
-    for metric in metrics_data['class_metrics']:
-        fig.add_trace(go.Scatterpolar(
-            r=[metric['precision'], metric['recall'], metric['f1']],
-            theta=categories,
-            fill='toself',
-            name=f"Class {metric['class']}"
-        ))
-    
-    fig.update_layout(
-        polar=dict(
-            radialaxis=dict(
-                visible=True,
-                range=[0, 1]
-            )
-        ),
-        title={
-            'text': "Metrics by Class",
-            'y':0.95,
-            'x':0.5,
-            'xanchor': 'center',
-            'yanchor': 'top',
-            'font': {'size': 20, 'color': '#3f51b5'}
-        },
-        showlegend=True,
-        height=450,
-        margin=dict(l=50, r=50, t=80, b=50),
-        paper_bgcolor="rgba(0,0,0,0)",
-        legend=dict(
-            orientation='h',
-            y=-0.1
-        )
-    )
-    
-    return fig
 
 # Main function to run the app
 def main():
@@ -618,197 +281,78 @@ def main():
     # Get class names
     class_names = classification_tag_encoder.classes_
     
-    # Tab 1: Enhanced Model Performance
+    # Tab 1: Model Performance
     with tabs[0]:
         st.markdown('<div class="sub-header">Model Performance Metrics</div>', unsafe_allow_html=True)
         
-        # Overview metrics at the top
-        metrics_data = None
+        col1, col2 = st.columns(2)
         
-        try:
-            with open(os.path.join(model_dir, 'evaluation_metrics.txt'), 'r') as f:
-                metrics_text = f.read()
-            
-            # Parse the classification report
-            metrics_data = parse_classification_report(metrics_text)
-            
-            # Display overall accuracy prominently
-            if metrics_data['accuracy'] is not None:
-                # Create a row of metrics
-                st.markdown('<div class="metric-row">', unsafe_allow_html=True)
+        with col1:
+            st.markdown('<div class="card">', unsafe_allow_html=True)
+            try:
+                with open(os.path.join(model_dir, 'evaluation_metrics.txt'), 'r') as f:
+                    metrics_text = f.read()
                 
-                # Overall accuracy gauge
-                col1, col2, col3 = st.columns(3)
+                st.markdown('<div class="section">Classification Report</div>', unsafe_allow_html=True)
+                st.text(metrics_text)
+            except FileNotFoundError:
+                st.warning("Evaluation metrics file not found. Let's generate new metrics.")
                 
-                with col1:
-                    accuracy_gauge = create_gauge_chart(
-                        metrics_data['accuracy'], 
-                        "Overall Accuracy"
-                    )
-                    st.plotly_chart(accuracy_gauge, use_container_width=True)
+                # Split data for evaluation
+                from sklearn.model_selection import train_test_split
+                X = features  # Use preprocessed features
+                y = df['Classification_Tag']
+                X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
                 
-                # Macro avg F1 score gauge
-                with col2:
-                    if metrics_data['macro_avg'] is not None:
-                        f1_gauge = create_gauge_chart(
-                            metrics_data['macro_avg']['f1'], 
-                            "Macro Avg F1 Score"
-                        )
-                        st.plotly_chart(f1_gauge, use_container_width=True)
+                # Scale features
+                X_test_scaled = scaler.transform(X_test)
                 
-                # Weighted avg precision gauge
-                with col3:
-                    if metrics_data['weighted_avg'] is not None:
-                        precision_gauge = create_gauge_chart(
-                            metrics_data['weighted_avg']['precision'], 
-                            "Weighted Avg Precision"
-                        )
-                        st.plotly_chart(precision_gauge, use_container_width=True)
+                # Generate predictions
+                y_pred = model.predict(X_test_scaled)
                 
-                st.markdown('</div>', unsafe_allow_html=True)
-                
-                # Display class metrics in a more visual way
-                st.markdown('<div class="card">', unsafe_allow_html=True)
-                st.markdown('<div class="section">Class-wise Performance</div>', unsafe_allow_html=True)
-                
-                # Create columns for each metric
-                metric_cols = st.columns(len(metrics_data['class_metrics']))
-                
-                # Display metrics for each class
-                for i, metric in enumerate(metrics_data['class_metrics']):
-                    with metric_cols[i]:
-                        # Determine color based on F1 score
-                        color_class = "high" if metric['f1'] >= 0.8 else "medium" if metric['f1'] >= 0.6 else "low"
-                        
-                        st.markdown(f'''
-                        <div class="metric-box {color_class}">
-                            <div class="metric-title">Class {metric['class']}</div>
-                            <div class="metric-value">{metric['f1']:.2f}</div>
-                            <div class="metric-title">F1 Score</div>
-                            
-                            <div class="class-title">
-                                <div class="class-indicator" style="background-color: #1976d2;"></div>
-                                <span>Precision: {metric['precision']:.2f}</span>
-                            </div>
-                            <div class="progress-container">
-                                <div class="progress-bar" style="width: {metric['precision']*100}%;"></div>
-                            </div>
-                            
-                            <div class="class-title">
-                                <div class="class-indicator" style="background-color: #43a047;"></div>
-                                <span>Recall: {metric['recall']:.2f}</span>
-                            </div>
-                            <div class="progress-container">
-                                <div class="progress-bar" style="background: linear-gradient(90deg, #81c784 0%, #43a047 100%); width: {metric['recall']*100}%;"></div>
-                            </div>
-                            
-                            <div class="metric-title mt-2">Support: {metric['support']}</div>
-                        </div>
-                        ''', unsafe_allow_html=True)
-                
-                st.markdown('</div>', unsafe_allow_html=True)
-                
-                # Add radar chart to compare metrics across classes
-                st.markdown('<div class="card">', unsafe_allow_html=True)
-                st.markdown('<div class="section">Metrics Comparison</div>', unsafe_allow_html=True)
-                
-                radar_chart = create_metrics_radar_chart(metrics_data)
-                st.plotly_chart(radar_chart, use_container_width=True)
-                
-                st.markdown('</div>', unsafe_allow_html=True)
-                
-                # Provide the raw metrics in an expandable section
-                with st.expander("View Raw Classification Report"):
-                    st.text(metrics_text)
-            
-        except FileNotFoundError:
-            st.warning("Evaluation metrics file not found. Let's generate new metrics.")
-            
-            # Split data for evaluation
-            from sklearn.model_selection import train_test_split
-            X = features  # Use preprocessed features
-            y = df['Classification_Tag']
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-            
-            # Scale features
-            X_test_scaled = scaler.transform(X_test)
-            
-            # Generate predictions
-            y_pred = model.predict(X_test_scaled)
-            
-            # Create and display classification report
-            report = classification_report(y_test, y_pred)
-            
-            # Parse the report for visualization
-            metrics_data = parse_classification_report(report)
-            
-            # Now display the visualized metrics
-            # (same visualization code as above would be repeated here)
-            st.text(report)
+                # Create and display classification report
+                report = classification_report(y_test, y_pred)
+                st.text(report)
+            st.markdown('</div>', unsafe_allow_html=True)
         
-        # Confusion Matrix with enhanced visualization
+        with col2:
+            st.markdown('<div class="card">', unsafe_allow_html=True)
+            st.markdown('<div class="section">Confusion Matrix</div>', unsafe_allow_html=True)
+            
+            try:
+                # Try to load confusion matrix from file
+                img_path = os.path.join(model_dir, 'confusion_matrix.png')
+                if os.path.exists(img_path):
+                    st.image(img_path, use_container_width=True)
+                else:
+                    raise FileNotFoundError("Confusion matrix image not found")
+            except FileNotFoundError:
+                st.info("Confusion matrix image not found. Generating one from model...")
+                
+                # Split data for evaluation
+                from sklearn.model_selection import train_test_split
+                X = features  # Use preprocessed features
+                y = df['Classification_Tag']
+                X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+                
+                # Scale features
+                X_test_scaled = scaler.transform(X_test)
+                
+                # Generate predictions
+                y_pred = model.predict(X_test_scaled)
+                
+                # Plot confusion matrix
+                cm_fig = plot_confusion_matrix(y_test, y_pred, class_names)
+                st.plotly_chart(cm_fig, use_container_width=True)
+            
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Model summary
         st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown('<div class="section">Confusion Matrix</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section">Model Summary</div>', unsafe_allow_html=True)
         
-        try:
-            # Try to load confusion matrix from file
-            img_path = os.path.join(model_dir, 'confusion_matrix.png')
-            if os.path.exists(img_path):
-                # Instead of just displaying the image, create a better layout
-                st.markdown('<div class="confusion-matrix-container">', unsafe_allow_html=True)
-                st.image(img_path, use_container_width=True)
-                st.markdown('</div>', unsafe_allow_html=True)
-                
-                # Add explanation of the confusion matrix
-                with st.expander("How to Interpret the Confusion Matrix"):
-                    st.markdown("""
-                    **Confusion Matrix Explained:**
-                    
-                    The confusion matrix shows the counts of predictions vs actual values:
-                    - Diagonal elements (top-left to bottom-right) represent correct predictions
-                    - Off-diagonal elements represent misclassifications
-                    - Rows represent actual classes, columns represent predicted classes
-                    
-                    **Quick Analysis:**
-                    - Class 0 has the highest accuracy with 124 correct predictions
-                    - Class 5 has significant misclassifications with other classes
-                    """)
-            else:
-                raise FileNotFoundError("Confusion matrix image not found")
-        except FileNotFoundError:
-            st.info("Confusion matrix image not found. Generating one from model...")
-            
-            # Split data for evaluation
-            from sklearn.model_selection import train_test_split
-            X = features  # Use preprocessed features
-            y = df['Classification_Tag']
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-            
-            # Scale features
-            X_test_scaled = scaler.transform(X_test)
-            
-            # Generate predictions
-            y_pred = model.predict(X_test_scaled)
-            
-            # Plot confusion matrix
-            cm_fig = plot_confusion_matrix(y_test, y_pred, class_names)
-            st.plotly_chart(cm_fig, use_container_width=True)
-            
-            # Add explanation of the confusion matrix
-            with st.expander("How to Interpret the Confusion Matrix"):
-                st.markdown("""
-                **Confusion Matrix Explained:**
-                
-                The confusion matrix shows the counts of predictions vs actual values:
-                - Diagonal elements (top-left to bottom-right) represent correct predictions
-                - Off-diagonal elements represent misclassifications
-                - Rows represent actual classes, columns represent predicted classes
-                
-                **Quick Analysis:**
-                - Class 0 has the highest accuracy with 124 correct predictions
-                - Class 5 has significant misclassifications with other classes
-                """)
-        
+        model_params = model.get_params()
+        st.json(model_params)
         st.markdown('</div>', unsafe_allow_html=True)
     
     # Tab 2: Feature Analysis
