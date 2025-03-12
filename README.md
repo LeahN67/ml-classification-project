@@ -1,7 +1,3 @@
-Here’s the updated **README.md** with the addition of the `best_models.py` script in the `model_comparisons` folder. This script includes **LightGBM**, **RandomForest**, and **XGBoost** classification models for comparison.
-
----
-
 # ML Classification Dashboard
 
 This repository contains a machine learning classification project that includes **data exploration**, **data processing**, **model building**, and an **interactive dashboard** for predictions. The project focuses on classifying financial transactions using a combination of rule-based and machine learning approaches.
