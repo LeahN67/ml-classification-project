@@ -204,157 +204,387 @@ def preprocess_features(df, status_encoder, dayofweek_encoder):
 
 # Main function to run the app
 def main():
-    # Header
-    st.markdown('<div class="main-header">ML Classification Dashboard</div>', unsafe_allow_html=True)
     
-    # Create tabs for different functionalities
-    tabs = st.tabs([
-        "📊 Model Performance", 
-        "📈 Feature Analysis", 
-        "🔮 Prediction Tool", 
-        "📝 Dataset Exploration"
-    ])
+    # Header with custom styling
+st.markdown("""
+<style>
+    .main-header {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1E88E5;
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1rem;
+        border-bottom: 2px solid #90CAF9;
+    }
+    .sub-header {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #0D47A1;
+        margin: 1rem 0;
+    }
+    .section {
+        font-size: 1.3rem;
+        font-weight: 500;
+        color: #1565C0;
+        margin: 0.8rem 0;
+    }
+    .card {
+        background-color: #FFFFFF;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .metric-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1E88E5;
+    }
+    .metric-label {
+        font-size: 1rem;
+        color: #546E7A;
+    }
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        background-color: #E3F2FD;
+        border-radius: 4px 4px 0 0;
+        padding: 10px 16px;
+        font-weight: 500;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #90CAF9 !important;
+        color: #0D47A1 !important;
+    }
+    .sidebar-content {
+        padding: 1rem;
+        background-color: #F5F7FA;
+        border-radius: 8px;
+    }
+    .footer {
+        text-align: center;
+        color: #546E7A;
+        margin-top: 3rem;
+        font-size: 0.9rem;
+    }
+    /* Button styling */
+    .stButton>button {
+        background-color: #1E88E5;
+        color: white;
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        border: none;
+        width: 100%;
+    }
+    .stButton>button:hover {
+        background-color: #0D47A1;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="main-header">ML Classification Dashboard</div>', unsafe_allow_html=True)
+
+# Create tabs with consistent icons and improved styling
+tabs = st.tabs([
+    "📊 Model Performance", 
+    "📈 Feature Analysis", 
+    "🔮 Prediction Tool", 
+    "📝 Dataset Exploration"
+])
+
+# Enhanced sidebar with better organization and styling
+with st.sidebar:
+    # Logo with proper padding and sizing
+    col1, col2, col3 = st.columns([1, 3, 1])
+    with col2:
+        st.image("https://xgboost.ai/images/logo/xgboost-logo.png", width=150)
     
-    # Sidebar for model selection and settings
-    with st.sidebar:
-        st.image("https://xgboost.ai/images/logo/xgboost-logo.png", width=200)
-        st.markdown("## Model Settings")
-        
-        model_dir = st.text_input("Model Directory", "modelling/model_outputs")
-        data_path = st.text_input("Data Path", "data_processing/modified_dataset.parquet")
-        
-        if st.button("Load Model and Data", key="load_button"):
+    st.markdown('<div class="sidebar-content">', unsafe_allow_html=True)
+    st.markdown("## Model Settings")
+    
+    # Input fields with better descriptions and defaults
+    model_dir = st.text_input(
+        "Model Directory", 
+        "modelling/model_outputs",
+        help="Directory containing the trained model files and evaluation metrics"
+    )
+    data_path = st.text_input(
+        "Data Path", 
+        "data_processing/modified_dataset.parquet",
+        help="Path to the processed dataset for analysis"
+    )
+    
+    # More prominent button with loading state
+    load_button = st.button(
+        "📂 Load Model and Data", 
+        key="load_button",
+        help="Click to load the selected model and dataset"
+    )
+    
+    if load_button:
+        with st.spinner('Loading model and data...'):
             st.session_state['load_triggered'] = True
-        
-        st.markdown("---")
-        st.markdown("## About")
-        st.markdown("""
-        This dashboard visualizes the performance of an XGBoost classification model.
-        
-        Features:
-        - Model performance metrics
-        - Feature importance analysis
-        - Interactive prediction tool
-        - Dataset exploration
-        """)
+            st.success('✅ Model and data loaded successfully!')
     
-    # Initialize session state variables
-    if 'load_triggered' not in st.session_state:
-        st.session_state['load_triggered'] = False
+    st.markdown("</div>", unsafe_allow_html=True)
     
-    # Load model, encoders, and data
-    model, status_encoder, dayofweek_encoder, classification_tag_encoder = load_model_and_encoders(model_dir)
-    df = load_data(data_path)
+    # About section with better styling
+    st.markdown('<div class="sidebar-content" style="margin-top: 20px;">', unsafe_allow_html=True)
+    st.markdown("## About")
+    st.markdown("""
+    This dashboard visualizes the performance of an XGBoost classification model with interactive features.
     
-    if not st.session_state['load_triggered']:
-        st.info("Please load the model and data by clicking the 'Load Model and Data' button in the sidebar.")
-        return
+    ### Features:
+    - 📊 Comprehensive model performance metrics
+    - 📈 In-depth feature importance analysis
+    - 🔮 Interactive prediction tool
+    - 📝 Detailed dataset exploration
     
-    if model is None or df is None:
-        st.error("Could not proceed without model or data. Please check the paths.")
-        return
+    *Built with Streamlit and XGBoost*
+    """)
+    st.markdown("</div>", unsafe_allow_html=True)
     
-    # Preprocess features for model
-    features = preprocess_features(df, status_encoder, dayofweek_encoder)
+    # Version info
+    st.markdown('<div class="footer">Version 1.2.0</div>', unsafe_allow_html=True)
+
+# Initialize session state variables
+if 'load_triggered' not in st.session_state:
+    st.session_state['load_triggered'] = False
+
+# Load model, encoders, and data
+if st.session_state['load_triggered']:
+    with st.spinner('Preparing environment...'):
+        model, status_encoder, dayofweek_encoder, classification_tag_encoder = load_model_and_encoders(model_dir)
+        df = load_data(data_path)
     
-    # Feature scaling
-    scaler = StandardScaler()
-    
-    # Debugging - show data types before fitting
-    if st.checkbox("Show feature data types for debugging"):
-        st.write("Feature data types:", features.dtypes)
-        st.write("Feature head:", features.head())
-    
-    # Fit the scaler on the processed features
-    try:
-        scaler.fit(features)
-    except Exception as e:
-        st.error(f"Error fitting scaler: {e}")
-        # Try to provide more detailed error information
-        for col in features.columns:
-            try:
-                np.asarray(features[col])
-            except Exception as col_e:
-                st.error(f"Error in column {col}: {col_e}")
-        return
-    
-    # Get class names
-    class_names = classification_tag_encoder.classes_
-    
-    # Tab 1: Model Performance
-    with tabs[0]:
-        st.markdown('<div class="sub-header">Model Performance Metrics</div>', unsafe_allow_html=True)
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown('<div class="card">', unsafe_allow_html=True)
-            try:
-                with open(os.path.join(model_dir, 'evaluation_metrics.txt'), 'r') as f:
-                    metrics_text = f.read()
-                
-                st.markdown('<div class="section">Classification Report</div>', unsafe_allow_html=True)
-                st.text(metrics_text)
-            except FileNotFoundError:
-                st.warning("Evaluation metrics file not found. Let's generate new metrics.")
-                
-                # Split data for evaluation
-                from sklearn.model_selection import train_test_split
-                X = features  # Use preprocessed features
-                y = df['Classification_Tag']
-                X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-                
-                # Scale features
-                X_test_scaled = scaler.transform(X_test)
-                
-                # Generate predictions
-                y_pred = model.predict(X_test_scaled)
-                
-                # Create and display classification report
-                report = classification_report(y_test, y_pred)
-                st.text(report)
-            st.markdown('</div>', unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown('<div class="card">', unsafe_allow_html=True)
-            st.markdown('<div class="section">Confusion Matrix</div>', unsafe_allow_html=True)
+        if model is None or df is None:
+            st.error("⚠️ Could not proceed without model or data. Please check the paths and try again.")
+        else:
+            # Preprocess features for model
+            with st.spinner('Processing features...'):
+                features = preprocess_features(df, status_encoder, dayofweek_encoder)
             
-            try:
-                # Try to load confusion matrix from file
-                img_path = os.path.join(model_dir, 'confusion_matrix.png')
-                if os.path.exists(img_path):
-                    st.image(img_path, use_container_width=True)
-                else:
-                    raise FileNotFoundError("Confusion matrix image not found")
-            except FileNotFoundError:
-                st.info("Confusion matrix image not found. Generating one from model...")
+                # Feature scaling
+                scaler = StandardScaler()
                 
-                # Split data for evaluation
-                from sklearn.model_selection import train_test_split
-                X = features  # Use preprocessed features
-                y = df['Classification_Tag']
-                X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+                # Debug toggle with improved styling
+                with st.expander("Debug Information", expanded=False):
+                    debug_toggle = st.checkbox("Show feature data types", value=False)
+                    if debug_toggle:
+                        st.write("Feature data types:", features.dtypes)
+                        st.dataframe(features.head(), use_container_width=True)
                 
-                # Scale features
-                X_test_scaled = scaler.transform(X_test)
+                # Fit the scaler on the processed features
+                try:
+                    scaler.fit(features)
+                except Exception as e:
+                    st.error(f"⚠️ Error fitting scaler: {e}")
+                    # Try to provide more detailed error information
+                    error_found = False
+                    for col in features.columns:
+                        try:
+                            np.asarray(features[col])
+                        except Exception as col_e:
+                            st.error(f"Error in column {col}: {col_e}")
+                            error_found = True
+                    
+                    if not error_found:
+                        st.error("No specific column errors found. Please check your data preprocessing steps.")
+                    return
                 
-                # Generate predictions
-                y_pred = model.predict(X_test_scaled)
+                # Get class names
+                class_names = classification_tag_encoder.classes_
                 
-                # Plot confusion matrix
-                cm_fig = plot_confusion_matrix(y_test, y_pred, class_names)
-                st.plotly_chart(cm_fig, use_container_width=True)
-            
-            st.markdown('</div>', unsafe_allow_html=True)
-        
-        # Model summary
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown('<div class="section">Model Summary</div>', unsafe_allow_html=True)
-        
-        model_params = model.get_params()
-        st.json(model_params)
-        st.markdown('</div>', unsafe_allow_html=True)
-    
+                # Tab 1: Model Performance with enhanced visuals
+                with tabs[0]:
+                    st.markdown('<div class="sub-header">Model Performance Metrics</div>', unsafe_allow_html=True)
+                    
+                    # Key metrics summary before detailed view
+                    metric_cols = st.columns(4)
+                    try:
+                        # Try to extract key metrics like accuracy, precision, recall, f1
+                        metrics_file = os.path.join(model_dir, 'evaluation_metrics.txt')
+                        if os.path.exists(metrics_file):
+                            with open(metrics_file, 'r') as f:
+                                metrics_text = f.read()
+                                
+                            # Extract accuracy from the text (assuming it's in the format)
+                            import re
+                            acc_match = re.search(r'accuracy\s*:\s*(0\.\d+)', metrics_text)
+                            precision_match = re.search(r'weighted avg\s*\d+\s*(0\.\d+)', metrics_text)
+                            recall_match = re.search(r'weighted avg\s*\d+\s*0\.\d+\s*(0\.\d+)', metrics_text)
+                            f1_match = re.search(r'weighted avg\s*\d+\s*0\.\d+\s*0\.\d+\s*(0\.\d+)', metrics_text)
+                            
+                            accuracy = float(acc_match.group(1)) if acc_match else None
+                            precision = float(precision_match.group(1)) if precision_match else None
+                            recall = float(recall_match.group(1)) if recall_match else None
+                            f1 = float(f1_match.group(1)) if f1_match else None
+                        else:
+                            # Generate metrics
+                            from sklearn.model_selection import train_test_split
+                            from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+                            
+                            X = features
+                            y = df['Classification_Tag']
+                            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+                            
+                            X_test_scaled = scaler.transform(X_test)
+                            y_pred = model.predict(X_test_scaled)
+                            
+                            accuracy = accuracy_score(y_test, y_pred)
+                            precision = precision_score(y_test, y_pred, average='weighted')
+                            recall = recall_score(y_test, y_pred, average='weighted')
+                            f1 = f1_score(y_test, y_pred, average='weighted')
+                        
+                        # Display key metrics in cards
+                        with metric_cols[0]:
+                            st.markdown('<div class="card">', unsafe_allow_html=True)
+                            st.markdown('<div class="metric-label">Accuracy</div>', unsafe_allow_html=True)
+                            st.markdown(f'<div class="metric-value">{accuracy:.2%}</div>', unsafe_allow_html=True)
+                            st.markdown('</div>', unsafe_allow_html=True)
+                            
+                        with metric_cols[1]:
+                            st.markdown('<div class="card">', unsafe_allow_html=True)
+                            st.markdown('<div class="metric-label">Precision</div>', unsafe_allow_html=True)
+                            st.markdown(f'<div class="metric-value">{precision:.2%}</div>', unsafe_allow_html=True)
+                            st.markdown('</div>', unsafe_allow_html=True)
+                            
+                        with metric_cols[2]:
+                            st.markdown('<div class="card">', unsafe_allow_html=True)
+                            st.markdown('<div class="metric-label">Recall</div>', unsafe_allow_html=True)
+                            st.markdown(f'<div class="metric-value">{recall:.2%}</div>', unsafe_allow_html=True)
+                            st.markdown('</div>', unsafe_allow_html=True)
+                            
+                        with metric_cols[3]:
+                            st.markdown('<div class="card">', unsafe_allow_html=True)
+                            st.markdown('<div class="metric-label">F1 Score</div>', unsafe_allow_html=True)
+                            st.markdown(f'<div class="metric-value">{f1:.2%}</div>', unsafe_allow_html=True)
+                            st.markdown('</div>', unsafe_allow_html=True)
+                            
+                    except Exception as e:
+                        st.warning(f"Could not extract or calculate metrics: {e}")
+                    
+                    # Detailed metrics and confusion matrix
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.markdown('<div class="card">', unsafe_allow_html=True)
+                        try:
+                            with open(os.path.join(model_dir, 'evaluation_metrics.txt'), 'r') as f:
+                                metrics_text = f.read()
+                            
+                            st.markdown('<div class="section">Classification Report</div>', unsafe_allow_html=True)
+                            
+                            # Format the classification report for better readability
+                            st.code(metrics_text, language="text")
+                        except FileNotFoundError:
+                            st.warning("Evaluation metrics file not found. Generating new metrics...")
+                            
+                            # Split data for evaluation
+                            from sklearn.model_selection import train_test_split
+                            from sklearn.metrics import classification_report
+                            
+                            X = features  # Use preprocessed features
+                            y = df['Classification_Tag']
+                            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+                            
+                            # Scale features
+                            X_test_scaled = scaler.transform(X_test)
+                            
+                            # Generate predictions
+                            y_pred = model.predict(X_test_scaled)
+                            
+                            # Create and display classification report
+                            report = classification_report(y_test, y_pred)
+                            st.code(report, language="text")
+                        st.markdown('</div>', unsafe_allow_html=True)
+                    
+                    with col2:
+                        st.markdown('<div class="card">', unsafe_allow_html=True)
+                        st.markdown('<div class="section">Confusion Matrix</div>', unsafe_allow_html=True)
+                        
+                        try:
+                            # Try to load confusion matrix from file
+                            img_path = os.path.join(model_dir, 'confusion_matrix.png')
+                            if os.path.exists(img_path):
+                                st.image(img_path, use_container_width=True)
+                            else:
+                                raise FileNotFoundError("Confusion matrix image not found")
+                        except FileNotFoundError:
+                            st.info("Confusion matrix image not found. Generating a new visualization...")
+                            
+                            # Split data for evaluation
+                            from sklearn.model_selection import train_test_split
+                            X = features  # Use preprocessed features
+                            y = df['Classification_Tag']
+                            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+                            
+                            # Scale features
+                            X_test_scaled = scaler.transform(X_test)
+                            
+                            # Generate predictions
+                            y_pred = model.predict(X_test_scaled)
+                            
+                            # Plot confusion matrix with improved styling
+                            cm_fig = plot_confusion_matrix(y_test, y_pred, class_names)
+                            st.plotly_chart(cm_fig, use_container_width=True)
+                        
+                        st.markdown('</div>', unsafe_allow_html=True)
+                    
+                    # Model summary with collapsible sections
+                    st.markdown('<div class="card">', unsafe_allow_html=True)
+                    st.markdown('<div class="section">Model Configuration</div>', unsafe_allow_html=True)
+                    
+                    model_params = model.get_params()
+                    # Group parameters for better organization
+                    param_groups = {
+                        "Core Parameters": ["n_estimators", "learning_rate", "max_depth", "booster"],
+                        "Tree Parameters": ["min_child_weight", "gamma", "subsample", "colsample_bytree"],
+                        "Learning Parameters": ["objective", "eval_metric", "early_stopping_rounds"],
+                        "Other Parameters": []  # Will contain all other parameters
+                    }
+                    
+                    # Sort parameters into groups
+                    for param in model_params:
+                        found = False
+                        for group, group_params in param_groups.items():
+                            if param in group_params:
+                                found = True
+                                break
+                        if not found:
+                            param_groups["Other Parameters"].append(param)
+                    
+                    # Create tabs for parameter groups
+                    param_tabs = st.tabs(list(param_groups.keys()))
+                    
+                    for i, (group, params) in enumerate(param_groups.items()):
+                        with param_tabs[i]:
+                            if params:  # Check if the group has any parameters
+                                for param in params:
+                                    if param in model_params:
+                                        st.markdown(f"**{param}:** `{model_params[param]}`")
+                            else:
+                                st.info(f"No parameters in the {group} group.")
+                    
+                    st.markdown('</div>', unsafe_allow_html=True)
+else:
+    # Welcome screen when no data is loaded
+    st.markdown('<div class="card" style="text-align: center; padding: 3rem;">', unsafe_allow_html=True)
+    st.image("https://xgboost.ai/images/logo/xgboost-logo.png", width=200)
+    st.markdown('<div style="font-size: 1.5rem; margin: 1rem 0;">Welcome to the ML Classification Dashboard</div>', unsafe_allow_html=True)
+    st.markdown("""
+    Please load your model and data to get started:
+    1. Verify the model directory path in the sidebar
+    2. Verify the data path in the sidebar
+    3. Click the 'Load Model and Data' button
+    """)
+    st.markdown('<div style="margin: 2rem 0;">', unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
     # Tab 2: Feature Analysis
     with tabs[1]:
         st.markdown('<div class="sub-header">Feature Importance Analysis</div>', unsafe_allow_html=True)
