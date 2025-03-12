@@ -1,3 +1,7 @@
+Here’s the updated **README.md** with the addition of the `best_models.py` script in the `model_comparisons` folder. This script includes **LightGBM**, **RandomForest**, and **XGBoost** classification models for comparison.
+
+---
+
 # ML Classification Dashboard
 
 This repository contains a machine learning classification project that includes **data exploration**, **data processing**, **model building**, and an **interactive dashboard** for predictions. The project focuses on classifying financial transactions using a combination of rule-based and machine learning approaches.
@@ -31,6 +35,9 @@ ml-classification-project/
 │       ├── evaluation_metrics.txt
 │       ├── confusion_matrix.png
 │       └── feature_importance.png
+│
+├── model_comparisons/     # Model comparison scripts
+│   └── best_models.py     # Script for comparing LightGBM, RandomForest, and XGBoost models
 │
 ├── app.py                 # Streamlit dashboard application
 ├── requirements.txt       # Project dependencies
@@ -130,7 +137,22 @@ This approach:
 - Can serve as a baseline or interpretable model
 - Provides insights that can inform feature engineering
 
-#### **Option 2: XGBoost Model**
+#### **Option 2: Model Comparison**
+
+Compare the performance of **LightGBM**, **RandomForest**, and **XGBoost** models:
+
+```bash
+python model_comparisons/best_models.py
+```
+
+This script:
+- Loads the processed data
+- Splits it into training and test sets
+- Trains and evaluates **LightGBM**, **RandomForest**, and **XGBoost** models
+- Compares their performance metrics (accuracy, precision, recall, F1-score)
+- Saves the best-performing model for deployment
+
+#### **Option 3: XGBoost Model**
 
 Train the XGBoost classification model:
 
@@ -211,6 +233,7 @@ Key libraries used in this project:
 | **numpy**       | For numerical operations                 |
 | **scikit-learn**| For model evaluation and preprocessing   |
 | **xgboost**     | For the classification model             |
+| **lightgbm**    | For LightGBM model training              |
 | **matplotlib**  | For static visualizations                |
 | **seaborn**     | For enhanced visualizations              |
 | **plotly**      | For interactive visualizations           |
@@ -231,9 +254,8 @@ Contributions are welcome! Please follow these steps:
 ## Acknowledgments
 
 - **Streamlit** for providing an excellent framework for building interactive dashboards.
-- **XGBoost** for its powerful and efficient implementation of gradient boosting.
-- **Scikit-learn** for its comprehensive suite of machine learning tools.
+- **XGBoost**, **LightGBM**, and **Scikit-learn** for their powerful machine learning implementations.
+- **Plotly** and **Seaborn** for their visualization capabilities.
 
 ---
 
-This README provides a comprehensive guide to the project, including setup instructions, workflow details, and customization options. Let me know if you need further assistance!

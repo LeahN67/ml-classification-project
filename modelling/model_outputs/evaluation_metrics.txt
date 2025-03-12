@@ -1,12 +1,12 @@
-              precision    recall  f1-score   support
+               precision    recall  f1-score   support
 
-           0       0.95      1.00      0.98       124
-           1       0.63      0.61      0.62       124
-           2       0.62      0.63      0.62       125
-           3       0.65      0.66      0.66       125
-           4       0.63      0.78      0.69       125
-           5       0.41      0.28      0.33       124
+ Bank_Charges       0.95      1.00      0.98       124
+Bill_Payments       0.63      0.61      0.62       124
+Card_Payments       0.62      0.63      0.62       125
+  Pre_Funding       0.65      0.66      0.66       125
+    Transfers       0.63      0.78      0.69       125
+  Withdrawals       0.41      0.28      0.33       124
 
-    accuracy                           0.66       747
-   macro avg       0.65      0.66      0.65       747
-weighted avg       0.65      0.66      0.65       747
+     accuracy                           0.66       747
+    macro avg       0.65      0.66      0.65       747
+ weighted avg       0.65      0.66      0.65       747

@@ -22,6 +22,7 @@ status_encoder = LabelEncoder()
 dayofweek_encoder = LabelEncoder()
 classification_tag_encoder = LabelEncoder()
 
+# Fit and transform categorical columns
 df['Status'] = status_encoder.fit_transform(df['Status'])
 df['DayOfWeek'] = dayofweek_encoder.fit_transform(df['DayOfWeek'])
 df['Classification_Tag'] = classification_tag_encoder.fit_transform(df['Classification_Tag'])
@@ -30,6 +31,9 @@ df['Classification_Tag'] = classification_tag_encoder.fit_transform(df['Classifi
 joblib.dump(status_encoder, os.path.join(output_folder, 'status_encoder.pkl'))
 joblib.dump(dayofweek_encoder, os.path.join(output_folder, 'dayofweek_encoder.pkl'))
 joblib.dump(classification_tag_encoder, os.path.join(output_folder, 'classification_tag_encoder.pkl'))
+
+# Retrieve class names
+class_names = classification_tag_encoder.classes_
 
 # Split the data into features and target
 X = df.drop('Classification_Tag', axis=1)
@@ -86,12 +90,14 @@ model = random_search.best_estimator_
 
 # Predictions and evaluation
 y_pred = model.predict(X_test)
-classification_rep = classification_report(y_test, y_pred)
+
+# Generate classification report with exact class labels
+classification_rep = classification_report(y_test, y_pred, target_names=class_names)
 conf_matrix = confusion_matrix(y_test, y_pred)
 
 # Visualization of the confusion matrix
 plt.figure(figsize=(8, 6))
-disp = ConfusionMatrixDisplay(confusion_matrix=conf_matrix)
+disp = ConfusionMatrixDisplay(confusion_matrix=conf_matrix, display_labels=class_names)
 disp.plot(cmap='Blues', ax=plt.gca())
 plt.title('Confusion Matrix')
 plt.savefig(os.path.join(output_folder, 'confusion_matrix.png'))
