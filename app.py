@@ -788,7 +788,7 @@ def main():
             X_test_scaled = scaler.transform(X_test)
             
             # Generate predictions
-                        y_pred = model.predict(X_test_scaled)
+            y_pred = model.predict(X_test_scaled)
             
             # Plot confusion matrix
             cm_fig = plot_confusion_matrix(y_test, y_pred, class_names)
