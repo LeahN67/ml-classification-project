@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -202,6 +203,31 @@ def preprocess_features(df, status_encoder, dayofweek_encoder):
     
     return features
 
+# Helper function to safely get model parameters
+def get_model_params_safely(model):
+    """Safely extract model parameters with error handling"""
+    try:
+        # Try to get parameters directly
+        params = model.get_params()
+        return params
+    except Exception as e:
+        # If that fails, try to extract basic parameters manually
+        try:
+            params = {}
+            # For XGBoost models
+            if hasattr(model, 'get_xgb_params'):
+                params['xgb_params'] = model.get_xgb_params()
+            
+            # Try to get common attributes
+            for attr in ['n_estimators', 'learning_rate', 'max_depth', 'objective']:
+                if hasattr(model, attr):
+                    params[attr] = getattr(model, attr)
+            
+            return params
+        except Exception as inner_e:
+            # If all else fails, return error information
+            return {"error": f"Could not extract model parameters: {str(e)}"}
+
 # Main function to run the app
 def main():
     # Header
@@ -347,12 +373,35 @@ def main():
             
             st.markdown('</div>', unsafe_allow_html=True)
         
-        # Model summary
+        # Model summary with error handling
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown('<div class="section">Model Summary</div>', unsafe_allow_html=True)
         
-        model_params = model.get_params()
-        st.json(model_params)
+        # Safely get model parameters with error handling
+        model_params = get_model_params_safely(model)
+        
+        if "error" in model_params:
+            st.warning(model_params["error"])
+            st.info("Displaying basic model information instead:")
+            
+            # Display basic model info
+            model_info = {
+                "Model Type": type(model).__name__,
+                "Framework": "XGBoost" if "XGB" in type(model).__name__ else "Unknown"
+            }
+            
+            # Try to get some common attributes
+            if hasattr(model, "n_estimators"):
+                model_info["Number of Trees"] = model.n_estimators
+            if hasattr(model, "max_depth"):
+                model_info["Max Tree Depth"] = model.max_depth
+            if hasattr(model, "learning_rate"):
+                model_info["Learning Rate"] = model.learning_rate
+                
+            st.json(model_info)
+        else:
+            st.json(model_params)
+            
         st.markdown('</div>', unsafe_allow_html=True)
     
     # Tab 2: Feature Analysis
